@@ -5,48 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login</title>
 <style>
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f4f4f4;
-    font-family: Arial, sans-serif;
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#f4f4f4;
+    font-family:Arial, sans-serif;
 }
-button {
-    padding: 15px 25px;
-    background: #24292e;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
+button{
+    padding:15px 25px;
+    background:#24292e;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
 }
-button:hover { background: #444; }
-#error { color: red; margin-top: 20px; text-align: center; }
+button:hover{
+    background:#444;
+}
 </style>
 </head>
 <body>
 
-<div>
-  <button id="loginBtn">Login with GitHub</button>
-  <div id="error"></div>
-</div>
+<button id="loginBtn">Login with GitHub</button>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
     const loginBtn = document.getElementById("loginBtn");
-    const errorDiv = document.getElementById("error");
 
-    loginBtn.addEventListener("click", () => {
-        const client_id = "Ov23liVxSlpWaLnSj2TE"; // Your GitHub OAuth App Client ID
-        const redirect_uri = "https://jpmarioportfolio.netlify.app/.netlify/functions/oauth-callback";
+    loginBtn.addEventListener("click", function() {
+        const client_id = "Ov23liVxSlpWaLnSj2TE"; // Replace with your GitHub OAuth App Client ID
+        const redirect_uri = "https://jpmarioportfolio.netlify.app/admin.html"; // OAuth callback page
         const scope = "read:user";
-
-        if (!client_id || !redirect_uri) {
-            errorDiv.textContent = "Client ID or redirect URI is missing!";
-            return;
-        }
 
         // Redirect to GitHub OAuth
         window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;

@@ -4,43 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
-<style>
-body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; background: #f4f4f4; color: #333; }
-h2 { color: #007acc; }
-button { padding: 10px 20px; margin-top: 20px; background: #24292e; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-button:hover { background: #444; }
-#error { color: red; margin-top: 20px; }
-</style>
-</head>
-<body>
-
-<h2>Admin Dashboard</h2>
-<div id="error"></div>
-<div id="dashboard" style="display:none;">
-    <p>Welcome, Admin!</p>
-    <button onclick="logout()">Logout</button>
-    <!-- Add admin content here -->
-</div>
-
 <script>
-// Get token from URL
+// Get GitHub OAuth code from URL
 const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('token');
-const errorDiv = document.getElementById("error");
-const dashboard = document.getElementById("dashboard");
+const code = urlParams.get('code');
 
-// Simple token validation
-if (!token) {
-    errorDiv.textContent = "Access denied. Please login first.";
+if (!code) {
+    // No code, redirect to login
+    window.location.href = "login.html";
 } else {
-    dashboard.style.display = "block";
-}
-
-// Logout function
-function logout() {
-    window.location.href = 'login.html';
+    // Exchange code for access token via Netlify serverless function
+    fetch(`/.netlify/functions/oauth-callback?code=${code}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.access_token) {
+            // Store token in sessionStorage
+            sessionStorage.setItem("adminToken", data.access_token);
+            // Redirect to portfolio
+            window.location.href = "index.html";
+        } else {
+            alert("Failed to login: " + (data.message || "Unknown error"));
+            window.location.href = "login.html";
+        }
+    })
+    .catch(err => {
+        alert("Error during login: " + err.message);
+        window.location.href = "login.html";
+    });
 }
 </script>
-
+</head>
+<body>
+<p>Logging in, please wait...</p>
 </body>
 </html>
