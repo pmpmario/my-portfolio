@@ -6,9 +6,12 @@
 <title>Project | John Doe</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
-body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:20px;background:#f4f4f4;color:#333;}
-iframe{width:100%;height:500px;border:none;border-radius:10px;margin-top:20px;}
-a.back{display:inline-block;margin-top:20px;padding:10px 20px;background:#007acc;color:#fff;border-radius:6px;text-decoration:none;}
+body { font-family: Arial,sans-serif; max-width:900px; margin:auto; padding:20px; background:#f4f4f4; color:#333; }
+iframe { width:100%; height:500px; border:none; border-radius:10px; margin-top:20px; }
+a.back { display:inline-block; margin-top:20px; padding:10px 20px; background:#007acc; color:#fff; border-radius:6px; text-decoration:none; }
+.admin-actions { margin-top: 10px; }
+.admin-actions button { padding:5px 10px; margin-right:5px; background:#24292e; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+.admin-actions button:hover { background:#444; }
 </style>
 </head>
 <body>
@@ -23,30 +26,78 @@ a.back{display:inline-block;margin-top:20px;padding:10px 20px;background:#007acc
 
 <div id="readme">Loading README...</div>
 
-<a href="index.html" class="back">← Back to Portfolio</a>
+<div id="adminActions" class="admin-actions"></div>
+
+<a id="backLink" href="index.html" class="back">← Back to Portfolio</a>
 
 <script>
-let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || {projects:[]};
-const urlParams=new URLSearchParams(window.location.search);
-const projectTitle=urlParams.get('id');
+// Get project id from URL
+const urlParams = new URLSearchParams(window.location.search);
+const projectTitle = urlParams.get('id');
 
-const project=portfolioData.projects.find(p=>p.title===projectTitle);
-if(project){
-  document.getElementById('projectTitle').textContent=project.title;
-  document.getElementById('projectVideo').src=project.youtube;
-  document.getElementById('projectDemo').src=project.demo||'';
-  // Fetch GitHub README
-  fetch(project.github).then(r=>r.text()).then(md=>{
-    document.getElementById('readme').innerHTML=marked.parse(md);
-  }).catch(e=>{
-    document.getElementById('readme').textContent="README not found!";
-  });
-}else{
-  document.getElementById('projectTitle').textContent="Project Not Found";
-  document.getElementById('readme').textContent="";
-  document.getElementById('projectVideo').style.display="none";
-  document.getElementById('projectDemo').style.display="none";
+// Get admin token from sessionStorage
+const token = sessionStorage.getItem("adminToken");
+
+// Load portfolio data
+let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || { projects: [] };
+const project = portfolioData.projects.find(p => p.title === projectTitle);
+
+// Display project data
+if (project) {
+    document.getElementById('projectTitle').textContent = project.title;
+    document.getElementById('projectVideo').src = project.youtube;
+    document.getElementById('projectDemo').src = project.demo || '';
+
+    // Fetch GitHub README
+    fetch(project.github)
+        .then(res => res.text())
+        .then(md => { document.getElementById('readme').innerHTML = marked.parse(md); })
+        .catch(err => { document.getElementById('readme').textContent = "README not found!"; });
+
+    // Admin edit button
+    if (token) {
+        const adminDiv = document.getElementById('adminActions');
+        adminDiv.innerHTML = `<button onclick="editProject()">Edit Project</button>`;
+    }
+
+} else {
+    document.getElementById('projectTitle').textContent = "Project Not Found";
+    document.getElementById('readme').textContent = "";
+    document.getElementById('projectVideo').style.display = "none";
+    document.getElementById('projectDemo').style.display = "none";
+}
+
+// Function to edit project (admin only)
+function editProject() {
+    if (!project) return;
+
+    const newTitle = prompt("Enter new project title:", project.title);
+    if (!newTitle) return;
+
+    const newGithub = prompt("Enter GitHub raw README URL:", project.github);
+    const newYoutube = prompt("Enter YouTube embed URL:", project.youtube);
+    const newDemo = prompt("Enter demo page URL:", project.demo);
+
+    // Update project in portfolioData
+    project.title = newTitle;
+    project.github = newGithub;
+    project.youtube = newYoutube;
+    project.demo = newDemo;
+
+    // Save updated data to localStorage
+    localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+    alert("Project updated!");
+    location.reload();
+}
+
+// Append token to back link if admin
+if (token) {
+    const backLink = document.getElementById("backLink");
+    const url = new URL(backLink.href, window.location.origin);
+    url.searchParams.set("token", token);
+    backLink.href = url.toString();
 }
 </script>
+
 </body>
 </html>

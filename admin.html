@@ -1,14 +1,46 @@
-<script>
-const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('token');
-if(!token) window.location.href = 'login.html';
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; background: #f4f4f4; color: #333; }
+h2 { color: #007acc; }
+button { padding: 10px 20px; margin-top: 20px; background: #24292e; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+button:hover { background: #444; }
+#error { color: red; margin-top: 20px; }
+</style>
+</head>
+<body>
 
 <h2>Admin Dashboard</h2>
-<button onclick="logout()">Logout</button>
+<div id="error"></div>
+<div id="dashboard" style="display:none;">
+    <p>Welcome, Admin!</p>
+    <button onclick="logout()">Logout</button>
+    <!-- Add admin content here -->
+</div>
 
 <script>
-function logout(){
+// Get token from URL
+const urlParams = new URLSearchParams(window.location.search);
+const token = urlParams.get('token');
+const errorDiv = document.getElementById("error");
+const dashboard = document.getElementById("dashboard");
+
+// Simple token validation
+if (!token) {
+    errorDiv.textContent = "Access denied. Please login first.";
+} else {
+    dashboard.style.display = "block";
+}
+
+// Logout function
+function logout() {
     window.location.href = 'login.html';
 }
 </script>
+
+</body>
+</html>

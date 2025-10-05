@@ -5,14 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>John Doe | Portfolio</title>
 <style>
-body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f4f4f4;color:#333;}
-header{padding:20px;text-align:center;background:#007acc;color:#fff;}
-section{padding:40px 20px;max-width:1000px;margin:auto;}
-.project-card{background:#fff;padding:20px;margin-bottom:20px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.project-card a{text-decoration:none;color:#007acc;}
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f4f4f4; color:#333; }
+header { padding:20px; text-align:center; background:#007acc; color:#fff; }
+section { padding:40px 20px; max-width:1000px; margin:auto; }
+.project-card { background:#fff; padding:20px; margin-bottom:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+.project-card a { text-decoration:none; color:#007acc; }
+.admin-actions { margin-top: 10px; }
+.admin-actions button { padding:5px 10px; margin-right:5px; background:#24292e; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+.admin-actions button:hover { background:#444; }
 </style>
 </head>
 <body>
+
 <header>
   <h1 id="name">John Doe</h1>
 </header>
@@ -33,35 +37,126 @@ section{padding:40px 20px;max-width:1000px;margin:auto;}
 </section>
 
 <script>
-// Load portfolio data from localStorage or fallback JSON
+// Retrieve admin token from sessionStorage
+const token = sessionStorage.getItem("adminToken");
+
+// Load portfolio data from localStorage or fallback
 let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || {
-  about: "Hi! I'm John Doe, a passionate developer.",
-  skills: ["HTML", "CSS", "JavaScript"],
-  projects: [
-    {title:"Portfolio Website", github:"https://raw.githubusercontent.com/username/repo/main/project1.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID", demo:"demos/project1/index.html"},
-    {title:"Todo App", github:"https://raw.githubusercontent.com/username/repo/main/project2.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID_2", demo:"demos/project2/index.html"}
-  ]
+    about: "Hi! I'm John Doe, a passionate developer.",
+    skills: ["HTML", "CSS", "JavaScript"],
+    projects: [
+        {title:"Portfolio Website", github:"https://raw.githubusercontent.com/username/repo/main/project1.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID", demo:"demos/project1/index.html"},
+        {title:"Todo App", github:"https://raw.githubusercontent.com/username/repo/main/project2.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID_2", demo:"demos/project2/index.html"}
+    ]
 };
 
-// About Me
+// Populate About section
 document.getElementById('aboutText').textContent = portfolioData.about;
 
-// Skills
+// Populate Skills
 const skillsList = document.getElementById('skillsList');
 portfolioData.skills.forEach(skill => {
-  const li = document.createElement('li');
-  li.textContent = skill;
-  skillsList.appendChild(li);
+    const li = document.createElement('li');
+    li.textContent = skill;
+    skillsList.appendChild(li);
 });
 
-// Projects
-const projectsContainer = document.getElementById('projectsContainer');
-portfolioData.projects.forEach(project => {
-  const div = document.createElement('div');
-  div.className = 'project-card';
-  div.innerHTML = `<a href="project.html?id=${encodeURIComponent(project.title)}">${project.title}</a>`;
-  projectsContainer.appendChild(div);
-});
+// Function to render projects
+function renderProjects() {
+    const projectsContainer = document.getElementById('projectsContainer');
+    projectsContainer.innerHTML = ""; // Clear container
+
+    portfolioData.projects.forEach((project, idx) => {
+        const div = document.createElement('div');
+        div.className = 'project-card';
+
+        // Build project link with token if admin
+        let projectLink = `project.html?id=${encodeURIComponent(project.title)}`;
+        if (token) projectLink += `&token=${token}`;
+
+        div.innerHTML = `<a href="${projectLink}">${project.title}</a>`;
+
+        // Admin buttons
+        if (token) {
+            const adminDiv = document.createElement('div');
+            adminDiv.className = 'admin-actions';
+            adminDiv.innerHTML = `
+                <button onclick="editProject(${idx})">Edit</button>
+                <button onclick="deleteProject(${idx})">Delete</button>
+            `;
+            div.appendChild(adminDiv);
+        }
+
+        projectsContainer.appendChild(div);
+    });
+}
+
+// Admin action functions
+function editProject(idx) {
+    const project = portfolioData.projects[idx];
+
+    const newTitle = prompt("Enter new project title:", project.title);
+    if (!newTitle) return;
+
+    const newGithub = prompt("Enter GitHub raw README URL:", project.github);
+    const newYoutube = prompt("Enter YouTube embed URL:", project.youtube);
+    const newDemo = prompt("Enter demo page URL:", project.demo);
+
+    portfolioData.projects[idx] = {
+        title: newTitle,
+        github: newGithub,
+        youtube: newYoutube,
+        demo: newDemo
+    };
+
+    localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+    renderProjects();
+}
+
+function deleteProject(idx) {
+    if (confirm("Are you sure you want to delete this project?")) {
+        portfolioData.projects.splice(idx, 1);
+        localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+        renderProjects();
+    }
+}
+
+// Add “Add New Project” button for admins
+if (token) {
+    const addBtn = document.createElement('button');
+    addBtn.textContent = "Add New Project";
+    addBtn.style.display = "block";
+    addBtn.style.margin = "20px auto";
+    addBtn.style.padding = "10px 20px";
+    addBtn.style.background = "#007acc";
+    addBtn.style.color = "#fff";
+    addBtn.style.border = "none";
+    addBtn.style.borderRadius = "6px";
+    addBtn.style.cursor = "pointer";
+    addBtn.onclick = addProject;
+
+    const projectsSection = document.getElementById('projects');
+    projectsSection.parentNode.insertBefore(addBtn, projectsSection);
+}
+
+// Function to add a new project
+function addProject() {
+    const title = prompt("Enter project title:");
+    if (!title) return alert("Project title is required!");
+
+    const github = prompt("Enter GitHub raw README URL:");
+    const youtube = prompt("Enter YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID):");
+    const demo = prompt("Enter demo page URL (relative path, e.g., demos/project1/index.html):");
+
+    portfolioData.projects.push({ title, github, youtube, demo });
+    localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+    renderProjects();
+}
+
+// Initial render
+renderProjects();
 </script>
+
+
 </body>
 </html>
