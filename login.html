@@ -31,19 +31,20 @@ button:hover{
 
 <button id="loginBtn">Login with GitHub</button>
 
-<script>
-document.getElementById('loginBtn').addEventListener('click', function(){
-    const client_id = "Ov23liVxSlpWaLnSj2TE"; // <-- Replace with your GitHub OAuth App Client ID
-    const redirect_uri = "https://jpmarioportfolio.netlify.app/.netlify/functions/oauth-callback";
-    const scope = "read:user";
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    const loginBtn = document.getElementById("loginBtn");
 
-    // Redirect to GitHub OAuth
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
+    loginBtn.addEventListener("click", function() {
+        const client_id = " Ov23liVxSlpWaLnSj2TE"; // <-- Replace with your GitHub OAuth App Client ID
+        const redirect_uri = "https://jpmarioportfolio.netlify.app/.netlify/functions/oauth-callback";
+        const scope = "read:user";
+
+        // Redirect to GitHub OAuth
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
+    });
 });
 </script>
 
 </body>
 </html>
- 
- 
- 
