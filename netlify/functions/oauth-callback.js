@@ -1,11 +1,9 @@
-import fetch from "node-fetch";
-
 export async function handler(event, context) {
     try {
         const code = event.queryStringParameters.code;
         if (!code) return { statusCode: 400, body: "Missing code parameter." };
 
-        // Use Netlify environment variables
+        // Netlify environment variables
         const client_id = process.env.GITHUB_CLIENT_ID;
         const client_secret = process.env.GITHUB_CLIENT_SECRET;
 
@@ -26,11 +24,11 @@ export async function handler(event, context) {
         const userData = await userResponse.json();
 
         // Only allow your GitHub username
-        if (userData.login === "YOUR_GITHUB_USERNAME") {
+        if (userData.login === "pmpmario") {  // <-- Replace with your GitHub username
             return {
                 statusCode: 302,
                 headers: {
-                    // Full GitHub Pages URL for admin.html
+                    // Full GitHub Pages admin.html URL
                     "Location": `https://pmpmario.github.io/my-portfolio/admin.html?token=${accessToken}`
                 },
                 body: ""
