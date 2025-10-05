@@ -35,14 +35,14 @@ export async function handler(event, context) {
             return {
                 statusCode: 403,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: "Unauthorized: You are not allowed to access this page." })
+                body: JSON.stringify({ message: "Unauthorized" })
             };
         }
     } catch (error) {
         return {
             statusCode: 500,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: `Server error: ${error.message}` })
+            body: JSON.stringify({ message: error.message })
         };
     }
 }

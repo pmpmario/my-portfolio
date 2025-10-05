@@ -36,11 +36,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginBtn = document.getElementById("loginBtn");
 
     loginBtn.addEventListener("click", function() {
-        const client_id = "Ov23liVxSlpWaLnSj2TE"; // Replace with your GitHub OAuth App Client ID
-        const redirect_uri = "https://jpmarioportfolio.netlify.app/admin.html"; // OAuth callback page
+        const client_id = "Ov23liVxSlpWaLnSj2TE"; // GitHub OAuth App Client ID
+        const redirect_uri = "https://jpmarioportfolio.netlify.app/admin.html"; // must match GitHub OAuth App
         const scope = "read:user";
 
-        // Redirect to GitHub OAuth
         window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
     });
 });

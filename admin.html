@@ -3,25 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
+<title>Admin Login</title>
 <script>
-// Get GitHub OAuth code from URL
 const urlParams = new URLSearchParams(window.location.search);
 const code = urlParams.get('code');
 
 if (!code) {
-    // No code, redirect to login
     window.location.href = "login.html";
 } else {
-    // Exchange code for access token via Netlify serverless function
+    // Call Netlify serverless function to exchange code for token
     fetch(`/.netlify/functions/oauth-callback?code=${code}`)
     .then(res => res.json())
     .then(data => {
         if (data.access_token) {
-            // Store token in sessionStorage
             sessionStorage.setItem("adminToken", data.access_token);
-            // Redirect to portfolio
-            window.location.href = "index.html";
+            window.location.href = "index.html"; // Redirect to portfolio with admin controls
         } else {
             alert("Failed to login: " + (data.message || "Unknown error"));
             window.location.href = "login.html";
