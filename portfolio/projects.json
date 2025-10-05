@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Portfolio Website",
+    "github": "https://raw.githubusercontent.com/username/repo/main/project1.md",
+    "youtube": "https://www.youtube.com/embed/YOUR_VIDEO_ID",
+    "demo": "demos/project1/index.html"
+  },
+  {
+    "title": "Todo App",
+    "github": "https://raw.githubusercontent.com/username/repo/main/project2.md",
+    "youtube": "https://www.youtube.com/embed/YOUR_VIDEO_ID_2",
+    "demo": "demos/project2/index.html"
+  }
+]

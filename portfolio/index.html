@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Doe | Portfolio</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f4f4f4;color:#333;}
+header{padding:20px;text-align:center;background:#007acc;color:#fff;}
+section{padding:40px 20px;max-width:1000px;margin:auto;}
+.project-card{background:#fff;padding:20px;margin-bottom:20px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.project-card a{text-decoration:none;color:#007acc;}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="name">John Doe</h1>
+</header>
+
+<section id="about">
+  <h2>About Me</h2>
+  <p id="aboutText">Loading about me...</p>
+</section>
+
+<section id="skills">
+  <h2>Skills</h2>
+  <ul id="skillsList"></ul>
+</section>
+
+<section id="projects">
+  <h2>Projects</h2>
+  <div id="projectsContainer"></div>
+</section>
+
+<script>
+// Load portfolio data from localStorage or fallback JSON
+let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || {
+  about: "Hi! I'm John Doe, a passionate developer.",
+  skills: ["HTML", "CSS", "JavaScript"],
+  projects: [
+    {title:"Portfolio Website", github:"https://raw.githubusercontent.com/username/repo/main/project1.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID", demo:"demos/project1/index.html"},
+    {title:"Todo App", github:"https://raw.githubusercontent.com/username/repo/main/project2.md", youtube:"https://www.youtube.com/embed/YOUR_VIDEO_ID_2", demo:"demos/project2/index.html"}
+  ]
+};
+
+// About Me
+document.getElementById('aboutText').textContent = portfolioData.about;
+
+// Skills
+const skillsList = document.getElementById('skillsList');
+portfolioData.skills.forEach(skill => {
+  const li = document.createElement('li');
+  li.textContent = skill;
+  skillsList.appendChild(li);
+});
+
+// Projects
+const projectsContainer = document.getElementById('projectsContainer');
+portfolioData.projects.forEach(project => {
+  const div = document.createElement('div');
+  div.className = 'project-card';
+  div.innerHTML = `<a href="project.html?id=${encodeURIComponent(project.title)}">${project.title}</a>`;
+  projectsContainer.appendChild(div);
+});
+</script>
+</body>
+</html>

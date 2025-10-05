@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project | John Doe</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;max-width:900px;margin:auto;padding:20px;background:#f4f4f4;color:#333;}
+iframe{width:100%;height:500px;border:none;border-radius:10px;margin-top:20px;}
+a.back{display:inline-block;margin-top:20px;padding:10px 20px;background:#007acc;color:#fff;border-radius:6px;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<h1 id="projectTitle">Loading...</h1>
+
+<h2>Demo Video</h2>
+<iframe id="projectVideo" allowfullscreen></iframe>
+
+<h2>Live Demo</h2>
+<iframe id="projectDemo" sandbox="allow-scripts allow-same-origin"></iframe>
+
+<div id="readme">Loading README...</div>
+
+<a href="index.html" class="back">← Back to Portfolio</a>
+
+<script>
+let portfolioData = JSON.parse(localStorage.getItem('portfolioData')) || {projects:[]};
+const urlParams=new URLSearchParams(window.location.search);
+const projectTitle=urlParams.get('id');
+
+const project=portfolioData.projects.find(p=>p.title===projectTitle);
+if(project){
+  document.getElementById('projectTitle').textContent=project.title;
+  document.getElementById('projectVideo').src=project.youtube;
+  document.getElementById('projectDemo').src=project.demo||'';
+  // Fetch GitHub README
+  fetch(project.github).then(r=>r.text()).then(md=>{
+    document.getElementById('readme').innerHTML=marked.parse(md);
+  }).catch(e=>{
+    document.getElementById('readme').textContent="README not found!";
+  });
+}else{
+  document.getElementById('projectTitle').textContent="Project Not Found";
+  document.getElementById('readme').textContent="";
+  document.getElementById('projectVideo').style.display="none";
+  document.getElementById('projectDemo').style.display="none";
+}
+</script>
+</body>
+</html>
