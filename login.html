@@ -16,9 +16,9 @@ button:hover{background:#444;}
 <script>
 function loginWithGitHub(){
     const client_id = "Ov23liVxSlpWaLnSj2TE";
-    const redirect_uri = "https://YOUR_NETLIFY_FUNCTION_DOMAIN/oauth-callback";
+    const redirect_uri = "https://jpmarioportfolio.netlify.app/.netlify/functions/oauth-callback";
     const scope = "read:user";
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${Ov23liVxSlpWaLnSj2TE}&redirect_uri=${redirect_uri}&scope=${"read:user"}`;
 }
 </script>
 </body>

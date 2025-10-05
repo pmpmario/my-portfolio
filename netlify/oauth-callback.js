@@ -21,7 +21,7 @@ export async function handler(event, context) {
     const userData = await userResponse.json();
 
     // Only allow your GitHub username
-    if(userData.login === "YOUR_GITHUB_USERNAME"){
+    if(userData.login === "pmpmario"){
         return {
             statusCode: 302,
             headers: { "Location": `/admin.html?token=${accessToken}` },
